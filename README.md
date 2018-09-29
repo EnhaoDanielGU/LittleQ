@@ -1,3 +1,3 @@
-# Test
+# Intro
 
-Hello, my name is Daniel.
+Well, I haven't known what to write yet. However, this is supposed to introduce our project.
