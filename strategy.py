@@ -69,10 +69,11 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
 # we apply a simpler method to calculate the mean
         
         # we calculate the long and short mean at 'counter' (now)
-        if (counter == memry_length - 1):
-            roll_short_old = bar.price.iloc[memry_length - short_window  - extra_memry : memry_length - extra_memry - 1].mean()
-            roll_mid_old = bar.price.iloc[memry_length - mid_window - extra_memry : memry_length - extra_memry - 1].mean()
-        
+#        if (counter == memry_length - 1):
+#            roll_short_old = bar.price.iloc[memry_length - short_window  - extra_memry : memry_length - extra_memry - 1].mean()
+#            roll_mid_old = bar.price.iloc[memry_length - mid_window - extra_memry : memry_length - extra_memry - 1].mean()
+        roll_short_old = bar.price.iloc[memry_length - short_window  - extra_memry : memry_length - extra_memry - 1].mean()
+        roll_mid_old = bar.price.iloc[memry_length - mid_window - extra_memry : memry_length - extra_memry - 1].mean()
         roll_short = bar.price.iloc[memry_length - short_window : memry_length - 1].mean()
         roll_mid = bar.price.iloc[memry_length - mid_window : memry_length - 1].mean()
         
@@ -82,13 +83,13 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
 
 #        if(bar[memry_length-2,'short_mavg']<bar[memry_length-2,'mid_mavg'] and bar[memry_length-1,'short_mavg']>bar[memry_length-1,'mid_mavg']):
         if(roll_short_old <= roll_mid_old and roll_short > roll_mid):
-            position_new[asset_index] += 1
+            position_new[asset_index] += 10
 #        if(bar[memry_length-2,'short_mavg']>bar[memry_length-2,'mid_mavg'] and bar[memry_length-1,'short_mavg']<bar[memry_length-1'mid_mavg']):
         elif(roll_short_old >= roll_mid_old and roll_short < roll_mid):
-            position_new[asset_index] -= 1
+            position_new[asset_index] -= 10
         
-        roll_short_old = roll_short
-        roll_mid_old = roll_mid
+#        roll_short_old = roll_short
+#        roll_mid_old = roll_mid
 
 
     # End of strategy
