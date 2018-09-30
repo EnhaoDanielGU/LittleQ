@@ -47,7 +47,8 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
 
 # Since we do not want a large memory to crash the program, we need to set up an index 'r' first    
     r = (counter + 1) % memry_length - 1 # This is to record the order of this data recorded in our memory
-    memory.data_save = pd.DataFrame(columns = ['close', 'high', 'low', 'open', 'volume']) # to create an empty DataFrame with column names
+    if (counter == 0):
+        memory.data_save = pd.DataFrame(columns = ['close', 'high', 'low', 'open', 'volume']) # to create an empty DataFrame with column names
     memory.data_save.loc[r] = data[asset_index,] # record the first data we met in the memory
 
 # When the number of data recorded exceed the length of the memory we desire, we can start to make decisions about buying and selling.
