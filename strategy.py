@@ -69,7 +69,7 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
 # we apply a simpler method to calculate the mean
         
         # we calculate the long and short mean at 'counter' (now)
-        if (counter == memry_length):
+        if (counter == memry_length - 1):
             roll_short_old = bar.price.iloc[memry_length - short_window  - extra_memry : memry_length - extra_memry - 1]].mean()
             roll_mid_old = bar.price.iloc[memry_length - mid_window - extra_memry : memry_length - extra_memry - 1]].mean()
         
