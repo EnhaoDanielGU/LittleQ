@@ -1,5 +1,5 @@
 # this script is to load and define the data
-# it may take several seconds to run this script
+# it may take several seconds to run this script. 1 or 2, i guess
 
 ## First, we import some useful packages
 import numpy as np
