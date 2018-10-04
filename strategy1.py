@@ -19,6 +19,8 @@ extra_memry = 1 # the number of extra data we will record in memory
 memry_length = mid_window + extra_memry # we add one to check the change of Moving Averages, more details below
 #enlarge_para = 1.05
 #shrinken_para = 0.95
+switch_long=False
+switch_short=False
 
 
 # Here is your main strategy function
@@ -96,10 +98,16 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
 
 #        if(bar[memry_length-2,'short_mavg']<bar[memry_length-2,'mid_mavg'] and bar[memry_length-1,'short_mavg']>bar[memry_length-1,'mid_mavg']):
         if(roll_short_old <= roll_mid_old and roll_short > roll_mid):
-            position_new[asset_index] = 14
+            switch_long=True
+            switch_short=False
+        if(position_new[asset_index]<10 and switch_long):
+            position_new[asset_index] = 10
 #        if(bar[memry_length-2,'short_mavg']>bar[memry_length-2,'mid_mavg'] and bar[memry_length-1,'short_mavg']<bar[memry_length-1'mid_mavg']):
         elif(roll_short_old >= roll_mid_old and roll_short < roll_mid):
-            position_new[asset_index] = -14
+            switch_short=True
+            swtich_long=False
+        if(position_new[asset_index]>-8 and switch_short):
+            position_new[asset_index] = -8
         
 #        roll_short_old = roll_short
 #        roll_mid_old = roll_mid
