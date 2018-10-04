@@ -66,8 +66,8 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
     memory.data_save.loc[r] = data[asset_index,] # record the first data we met in the memory
 
 # When the number of data recorded exceed the length of the memory we desire, we can start to make decisions about buying and selling.
-    if (counter >= memry_length - 1 and counter % 13 == 0): 
-#    if (counter >= memry_length - 1): 
+
+    if (counter >= memry_length - 1): 
     
         for i in range(0, memry_length):
             # we set up a new memory recording the past few data in the order of time
@@ -100,12 +100,12 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
         if(roll_short_old <= roll_mid_old and roll_short > roll_mid):
             switch_long=True
             switch_short=False
-        if(position_new[asset_index]<10 and switch_long):
-            position_new[asset_index] = 10
 #        if(bar[memry_length-2,'short_mavg']>bar[memry_length-2,'mid_mavg'] and bar[memry_length-1,'short_mavg']<bar[memry_length-1'mid_mavg']):
         elif(roll_short_old >= roll_mid_old and roll_short < roll_mid):
             switch_short=True
             swtich_long=False
+        if(position_new[asset_index]<10 and switch_long):
+            position_new[asset_index] = 10
         if(position_new[asset_index]>-8 and switch_short):
             position_new[asset_index] = -8
         
