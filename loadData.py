@@ -8,8 +8,9 @@ import matplotlib.pyplot as plt
 import h5py
 import pandas as pd
 
+path = 'D:/HKUSTyear1-1/MAFS5140/project/projectdata/'
 # load the data in 201801-201808
-data11 = pd.HDFStore("D:/HKUSTyear1-1/MAFS5140/project/projectdata/data_format1_201801.h5")
+data11 = pd.HDFStore(path +'data_format1_201801.h5')
 data12 = pd.HDFStore("D:/HKUSTyear1-1/MAFS5140/project/projectdata/data_format1_201802.h5")
 data13 = pd.HDFStore("D:/HKUSTyear1-1/MAFS5140/project/projectdata/data_format1_201803.h5")
 data14 = pd.HDFStore("D:/HKUSTyear1-1/MAFS5140/project/projectdata/data_format1_201804.h5")
