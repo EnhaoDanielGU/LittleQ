@@ -66,23 +66,22 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
     # Since we do not want a large memory to crash the program, we need to set up an index 'r' first
     if (counter == 0):
         memory.data_save = pd.DataFrame(columns = ['close', 'high', 'low', 'open', 'volume']) # to create an empty DataFrame with column names
-        memory.data_save2 = pd.DataFrame(columns = ['close', 'high', 'low', 'open', 'volume']) # to create an empty DataFrame with column names
+        memory.data_save2 = pd.DataFrame(columns = ['close', 'high', 'low', 'open', 'volume', 'average', 'short_ema', 'mid_ema', 'MACD', 'Nine', 'diff']) # to create an empty DataFrame with column names
     #r = counter % memry_length # This is to record the order of this data recorded in our memory        
     memory.data_save.loc[counter] = data[asset_index,] # record the first data we met in the memory
+    memory.data_save2.loc[counter] = memory.data_save.loc[counter]
 
 # When the number of data recorded exceed the length of the memory we desire, we can start to make decisions about buying and selling.
 
     if (counter >= memry_length): 
-        for i in range(0, memry_length):
-            # we set up a new memory recording the past few data in the order of time
-            memory.data_save2.loc[i] = memory.data_save.loc[len(memory.data_save)-memry_length+i] #? not sure if it works yet
+           
     
-        memory.data_save2['average'] = (memory.data_save2['close'] + memory.data_save2['high'] + memory.data_save2['low'] + memory.data_save2['open']) / 4
+        memory.data_save2['average'].loc[counter] = (memory.data_save2['close'].loc[counter] + memory.data_save2['high'].loc[counter] + memory.data_save2['low'].loc[counter] + memory.data_save2['open'].loc[counter]) / 4
         memory.data_save2['short_ema'] = memory.data_save2.average.ewm(span=short_window).mean()
         memory.data_save2['mid_ema'] = memory.data_save2.average.ewm(span=mid_window).mean()
-        memory.data_save2['MACD'] = memory.data_save2['short_ema'] - memory.data_save2['mid_ema']
+        memory.data_save2['MACD'].loc[counter] = memory.data_save2['short_ema'].loc[counter] - memory.data_save2['mid_ema'].loc[counter]
         memory.data_save2['Nine']=memory.data_save2.MACD.ewm(span=9).mean()
-        memory.data_save2['diff']=memory.data_save2['MACD']-memory.data_save2['Nine']
+        memory.data_save2['diff'].loc[counter]=memory.data_save2['MACD'].loc[counter]-memory.data_save2['Nine'].loc[counter]
         if (memory.data_save2.iloc[len(memory.data_save2) - 2]['diff'] < 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['diff'] > 0):
             position_new[asset_index] = 10
         elif (memory.data_save2.iloc[len(memory.data_save2) - 2]['diff'] > 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['diff'] < 0):
