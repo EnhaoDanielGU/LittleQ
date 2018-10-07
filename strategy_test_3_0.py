@@ -78,10 +78,10 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
             memory.data_save2.loc[i] = memory.data_save.loc[len(memory.data_save)-memry_length+i] #? not sure if it works yet
     
         memory.data_save2['average'] = (memory.data_save2['close'] + memory.data_save2['high'] + memory.data_save2['low'] + memory.data_save2['open']) / 4
-        memory.data_save2['short_mavg'] = memory.data_save2.average.rolling(window=short_window).mean()
-        memory.data_save2['mid_mavg'] = memory.data_save2.average.rolling(window=mid_window).mean()
-        memory.data_save2['MACD'] = memory.data_save2['short_mavg'] - memory.data_save2['mid_mavg']
-        memory.data_save2['Nine']=memory.data_save2.MACD.rolling(window=9).mean()
+        memory.data_save2['short_ema'] = memory.data_save2.average.ewm(span=short_window).mean()
+        memory.data_save2['mid_ema'] = memory.data_save2.average.ewm(span=mid_window).mean()
+        memory.data_save2['MACD'] = memory.data_save2['short_ema'] - memory.data_save2['mid_ema']
+        memory.data_save2['Nine']=memory.data_save2.MACD.ewm(span=9).mean()
         memory.data_save2['diff']=memory.data_save2['MACD']-memory.data_save2['Nine']
         if (memory.data_save2.iloc[len(memory.data_save2) - 2]['diff'] < 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['diff'] > 0):
             position_new[asset_index] = 10
