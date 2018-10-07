@@ -23,12 +23,10 @@ Created on Fri Oct  5 23:35:02 2018
 import pandas as pd
 
 asset_index = 1  # only consider BTC (the **second** crypto currency in dataset)
-mid_window = 55  # the middle-length average period
-short_window = 8  # the short-length average period
-extra_memry = 1  # the number of extra data we will record in memory
+mid_window = 26  # the middle-length average period
+short_window = 12  # the short-length average period
+extra_memry = 9  # the number of extra data we will record in memory （to calculate the rolling_mean of macd，window =9）
 memry_length = mid_window + extra_memry  # we add one to check the change of Moving Averages, more details below
-t = 4
-
 # enlarge_para = 1.05
 # shrinken_para = 0.95
 
@@ -69,16 +67,12 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
     if (counter == 0):
         memory.data_save = pd.DataFrame(columns = ['close', 'high', 'low', 'open', 'volume']) # to create an empty DataFrame with column names
         memory.data_save2 = pd.DataFrame(columns = ['close', 'high', 'low', 'open', 'volume']) # to create an empty DataFrame with column names
-        memory.signal_buy=None
-        memory.signal_sell=None
-        memory.t_increment=0
-        memory.t=0
     #r = counter % memry_length # This is to record the order of this data recorded in our memory        
     memory.data_save.loc[counter] = data[asset_index,] # record the first data we met in the memory
 
 # When the number of data recorded exceed the length of the memory we desire, we can start to make decisions about buying and selling.
 
-    if (counter >= memry_length - 1): 
+    if (counter >= memry_length): 
         for i in range(0, memry_length):
             # we set up a new memory recording the past few data in the order of time
             memory.data_save2.loc[i] = memory.data_save.loc[len(memory.data_save)-memry_length+i] #? not sure if it works yet
@@ -87,13 +81,12 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
         memory.data_save2['short_mavg'] = memory.data_save2.average.rolling(window=short_window).mean()
         memory.data_save2['mid_mavg'] = memory.data_save2.average.rolling(window=mid_window).mean()
         memory.data_save2['MACD'] = memory.data_save2['short_mavg'] - memory.data_save2['mid_mavg']
-        if (memory.data_save2.iloc[len(memory.data_save2) - 2]['MACD'] < 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['MACD'] > 0):
+        memory.data_save2['Nine']=memory.data_save2.MACD.rolling(window=9).mean()
+        memory.data_save2['diff']=memory.data_save2['MACD']-memory.data_save2['Nine']
+        if (memory.data_save2.iloc[len(memory.data_save2) - 2]['diff'] < 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['diff'] > 0):
             position_new[asset_index] = 10
-        elif (memory.data_save2.iloc[len(memory.data_save2) - 2]['MACD'] > 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['MACD'] < 0):
+        elif (memory.data_save2.iloc[len(memory.data_save2) - 2]['diff'] > 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['diff'] < 0):
             position_new[asset_index] = -8
-  
-    if (counter == 58 or counter ==60):
-        print(memory.data_save2)
     #        roll_short_old = roll_short
     #        roll_mid_old = roll_mid
 
