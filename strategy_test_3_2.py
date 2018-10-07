@@ -24,9 +24,9 @@ Remark: This strategy trades too frequent, the transition cost (4100+) is almost
 import pandas as pd
 
 asset_index = 1  # only consider BTC (the **second** crypto currency in dataset)
-mid_window = 55  # the middle-length average period
-short_window = 34  # the short-length average period
-extra_memry = 1  # the number of extra data we will record in memory
+mid_window = 26  # the middle-length average period
+short_window = 12  # the short-length average period
+extra_memry = 9  # the number of extra data we will record in memory
 memry_length = mid_window + extra_memry  # we add one to check the change of Moving Averages, more details below
 t = 3
 
@@ -79,20 +79,22 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
 
 # When the number of data recorded exceed the length of the memory we desire, we can start to make decisions about buying and selling.
 
-    if (counter >= memry_length - 1): 
+    if (counter >= memry_length): 
         for i in range(0, memry_length):
             # we set up a new memory recording the past few data in the order of time
-            memory.data_save2.loc[i] = memory.data_save.loc[len(memory.data_save)-memry_length+i] #? not sure if it works yet
+            memory.data_save2.loc[i] = memory.data_save.loc[len(memory.data_save)-memry_length+i] 
 
         memory.data_save2['average'] = (memory.data_save2['close'] + memory.data_save2['high'] + memory.data_save2['low'] + memory.data_save2['open']) / 4
-        memory.data_save2['short_mavg'] = memory.data_save2.average.rolling(window=short_window).mean()
-        memory.data_save2['mid_mavg'] = memory.data_save2.average.rolling(window=mid_window).mean()
-        memory.data_save2['MACD'] = memory.data_save2['short_mavg'] - memory.data_save2['mid_mavg']
-        if (memory.data_save2.iloc[len(memory.data_save2) - 2]['MACD'] < 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['MACD'] > 0):
+        memory.data_save2['short_ema'] = memory.data_save2.average.ewm(span=short_window).mean()
+        memory.data_save2['mid_ema'] = memory.data_save2.average.ewm(span=mid_window).mean()
+        memory.data_save2['MACD'] = memory.data_save2['short_ema'] - memory.data_save2['mid_ema']
+        memory.data_save2['Nine']=memory.data_save2.MACD.ewm(span=9).mean()
+        memory.data_save2['diff']=memory.data_save2['MACD']-memory.data_save2['Nine']
+        if (memory.data_save2.iloc[len(memory.data_save2) - 2]['diff'] < 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['diff'] > 0):
             memory.t_increment=1
             memory.signal_buy=True
             memory.signal_sell=False
-        elif (memory.data_save2.iloc[len(memory.data_save2) - 2]['MACD'] > 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['MACD'] < 0):
+        elif (memory.data_save2.iloc[len(memory.data_save2) - 2]['diff'] > 0 and memory.data_save2.iloc[len(memory.data_save2) - 1]['diff'] < 0):
             memory.t_increment=1
             memory.signal_buy=False
             memory.signal_sell=True
