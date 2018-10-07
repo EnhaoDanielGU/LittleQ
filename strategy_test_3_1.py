@@ -23,7 +23,7 @@ import pandas as pd
 
 asset_index = 1  # only consider BTC (the **second** crypto currency in dataset)
 mid_window = 26  # the middle-length average period
-short_window = 13  # the short-length average period
+short_window = 12  # the short-length average period
 extra_memry = 9  # the number of extra data we will record in memory
 memry_length = mid_window + extra_memry  # we add one to check the change of Moving Averages, more details below
 limit = 2#the limit of position we buy until we reach it
