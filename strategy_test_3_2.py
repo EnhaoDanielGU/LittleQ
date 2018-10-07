@@ -81,17 +81,17 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
             memory.t_increment=1
             memory.signal_buy=False
             memory.signal_sell=True
-        if (aa):
-            memory.t_increment = 1
-            memory.signal_buy = False
-            memory.signal_sell = False
+#        if (aa):
+#            memory.t_increment = 1
+#            memory.signal_buy = False
+#            memory.signal_sell = False
         memory.t += memory.t_increment
         if(memory.t>0 and memory.t<=t and memory.signal_buy == True and memory.signal_sell == False):
             position_new[asset_index] = 8
         if(memory.t>0 and memory.t<=t and memory.signal_sell == False and memory.signal_buy == True):
             position_new[asset_index] = -3
-        if(memory.signal_sell == False and memory.signal_buy == False):
-            position_new[asset_index] = 0
+#        if(memory.signal_sell == False and memory.signal_buy == False):
+#            position_new[asset_index] = 0
         if(memory.t==t):
             memory.t_increment=0
             memory.t=0
