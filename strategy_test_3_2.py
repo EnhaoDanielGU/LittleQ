@@ -1,27 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Oct  5 22:58:41 2018
-
-@author: jiayipan
-"""
-
 """"This is the 3-2 strategy (week 3, second improvement). when signals of buying or selling appear, 
 we buy for several minute for as much as possible. Thie length of time is denoted by t
 Remark: This strategy trades too frequent, the transition cost (4100+) is almost equal to the loss of balance(test sample : 2018-9-23:29
 """
 
-
-# Here you can
-# 1. import necessary python packages for your strategy
-# 2. Load your own facility files containing functions, trained models, extra data, etc for later use
-# 3. Set some global constants
-# Note:
-# 1. You should put your facility files in the same folder as this strategy.py file
-# 2. When load files, ALWAYS use relative path such as "data/facility.pickle"
-# DO NOT use absolute path such as "C:/Users/Peter/Documents/project/data/facility.pickle"
-
 import pandas as pd
+import numpy as np
 
 asset_index = 1  # only consider BTC (the **second** crypto currency in dataset)
 mid_window = 55  # the middle-length average period
@@ -96,11 +79,17 @@ def handle_bar(counter,  # a counter for number of minute bars that have already
             memory.t_increment=1
             memory.signal_buy=False
             memory.signal_sell=True
-        memory.t+=memory.t_increment
-        if(memory.t>0 and memory.t<=t and memory.signal_buy):
+        if (aa):
+            memory.t_increment = 1
+            memory.signal_buy = False
+            memory.signal_sell = False
+        memory.t += memory.t_increment
+        if(memory.t>0 and memory.t<=t and memory.signal_buy == True and memory.signal_sell == False):
             position_new[asset_index] = 8
-        if(memory.t>0 and memory.t<=t and memory.signal_sell):
+        if(memory.t>0 and memory.t<=t and memory.signal_sell == False and memory.signal_buy == True):
             position_new[asset_index] = -3
+        if(memory.signal_sell == False and memory.signal_buy == False):
+            position_new[asset_index] = 0
         if(memory.t==t):
             memory.t_increment=0
             memory.t=0
